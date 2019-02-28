@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href='node_modules/bootstrap/dist/css/bootstrap.min.css'>
+    <title>Document</title>
+</head>
+
+<body>
+    
+    <main class="container">
+        <div id="content"></div>
+    </main>
+
+    <script>
+
+        $.ajax({
+            url: 'http://localhost:8880/h',
+            method: 'GET'
+        }).done(function (d) {
+            buildTemplate(d);
+        });
+
+        function buildTemplate(dataArray) {
+
+            let template = `<table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Hosts</th>
+                                            <th scope="col">Error</th>
+                                        </tr>
+                                    </thead>
+                                <tbody>
+                            `;
+            for (let i = 0; i < dataArray.length; i++) {
+                const row = buildRow(dataArray[i]);
+                template += row;
+            }
+            template += `</tbody>
+                    </table>`
+
+            $('#content').append(template);
+        }
+
+        function buildRow(row) {
+
+            var errorKey = 'dns-error';
+            if (!row.errorKey)
+                row.errorKey = ' ';
+            const template = `<tr>
+                                <th scope="row">` + row.id + `</th>
+                                <td>` + row.host + `</td>
+                                <td>` + row[errorKey] + `</td>
+                            </tr>
+                            `;
+            return template;
+        }
+
+    </script>
+
+
+</body>
+
+</html>
